@@ -95,7 +95,7 @@ func (e Enum[T]) Members() []Member[T] {
 }
 
 func (e Enum[T]) Values() []T {
-	res := make([]T, len(e.members))
+	res := make([]T, 0, len(e.members))
 	for _, m := range e.members {
 		res = append(res, m.value)
 	}

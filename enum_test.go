@@ -48,3 +48,38 @@ func TestEnumParse(t *testing.T) {
 	parsed := Colors.Parse("red")
 	is.Equal(parsed, &Red)
 }
+
+func TestEnumEmpty(t *testing.T) {
+	is := is.New(t)
+	is.True(!Colors.Empty())
+	is.True(enum.New[int]().Empty())
+}
+
+func TestEnumLen(t *testing.T) {
+	is := is.New(t)
+	is.Equal(Colors.Len(), 3)
+	is.Equal(enum.New[int]().Len(), 0)
+}
+
+func TestEnumContains(t *testing.T) {
+	is := is.New(t)
+	is.True(Colors.Contains(Red))
+	is.True(Colors.Contains(Green))
+	is.True(Colors.Contains(Blue))
+	blue := enum.M[Color]("blue")
+	is.True(Colors.Contains(blue))
+	purple := enum.M[Color]("purple")
+	is.True(!Colors.Contains(purple))
+}
+
+func TestEnumMembers(t *testing.T) {
+	is := is.New(t)
+	exp := []enum.Member[Color]{Red, Green, Blue}
+	is.Equal(Colors.Members(), exp)
+}
+
+func TestEnumValues(t *testing.T) {
+	is := is.New(t)
+	exp := []Color{"red", "green", "blue"}
+	is.Equal(Colors.Values(), exp)
+}
