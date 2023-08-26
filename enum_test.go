@@ -11,11 +11,11 @@ func TestEnumSmoke(t *testing.T) {
 	is := is.New(t)
 	type Color string
 	var (
-		Red   Color = "red"
-		Green Color = "green"
+		Red    = enum.M[Color]("red")
+		Green  = enum.M[Color]("green")
+		Blue   = enum.M[Color]("blue")
+		Colors = enum.New(Red, Green, Blue)
 	)
-	var Colors = enum.New[string](Red, Green)
-	parsed, ok := Colors.Parse("red")
-	is.True(ok)
+	parsed := Colors.Parse("red")
 	is.Equal(parsed, Red)
 }
