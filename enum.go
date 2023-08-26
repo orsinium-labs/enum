@@ -16,6 +16,23 @@ func New[T comparable](members ...Member[T]) Enum[T] {
 	return Enum[T]{members}
 }
 
+func (e Enum[T]) Empty() bool {
+	return len(e.members) == 0
+}
+
+func (e Enum[T]) Len() int {
+	return len(e.members)
+}
+
+func (e Enum[T]) Contains(member Member[T]) bool {
+	for _, m := range e.members {
+		if m == member {
+			return true
+		}
+	}
+	return false
+}
+
 func (e Enum[T]) Parse(value T) *Member[T] {
 	for _, member := range e.members {
 		if member.value == value {
