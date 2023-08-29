@@ -13,7 +13,7 @@ var (
 	Red    = Color{"red"}
 	Green  = Color{"green"}
 	Blue   = Color{"blue"}
-	Colors = enum.New[string](Red, Green, Blue)
+	Colors = enum.New(Red, Green, Blue)
 )
 
 func TestMember_Value(t *testing.T) {

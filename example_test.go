@@ -13,11 +13,11 @@ func ExampleNew() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	fmt.Printf("%#v\n", Colors)
-	// Output: enum.New[string](enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
+	// Output: enum.New(enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
 }
 
 func ExampleEnum_String() {
@@ -27,7 +27,7 @@ func ExampleEnum_String() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	fmt.Println(Colors)
@@ -41,11 +41,11 @@ func ExampleEnum_GoString() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	fmt.Printf("%#v\n", Colors)
-	// Output: enum.New[string](enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
+	// Output: enum.New(enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
 }
 
 func ExampleEnum_Parse() {
@@ -55,7 +55,7 @@ func ExampleEnum_Parse() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	parsed := Colors.Parse("red")
@@ -70,7 +70,7 @@ func ExampleEnum_Contains() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	contains := Colors.Contains(Red)
@@ -85,7 +85,7 @@ func ExampleEnum_Empty() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	empty := Colors.Empty()
@@ -100,7 +100,7 @@ func ExampleEnum_Index() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	index := Colors.Index(Green)
@@ -115,7 +115,7 @@ func ExampleEnum_Value() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	value := Colors.Value(Green)
@@ -130,7 +130,7 @@ func ExampleEnum_Len() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	length := Colors.Len()
@@ -145,7 +145,7 @@ func ExampleEnum_Members() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	members := Colors.Members()
@@ -160,7 +160,7 @@ func ExampleEnum_Values() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	values := Colors.Values()
@@ -175,7 +175,7 @@ func ExampleEnum_TypeName() {
 		Red    = Color{"red"}
 		Green  = Color{"green"}
 		Blue   = Color{"blue"}
-		Colors = enum.New[string](Red, Green, Blue)
+		Colors = enum.New(Red, Green, Blue)
 	)
 
 	tname := Colors.TypeName()

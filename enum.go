@@ -119,5 +119,5 @@ func (e Enum[M, V]) GoString() string {
 		values = append(values, fmt.Sprintf("%T{%#v}", m, e.Value(m)))
 	}
 	joined := strings.Join(values, ", ")
-	return fmt.Sprintf("enum.New[%T](%s)", *new(V), joined)
+	return fmt.Sprintf("enum.New(%s)", joined)
 }
