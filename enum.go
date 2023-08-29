@@ -13,7 +13,7 @@ type Member[T comparable] struct {
 
 // iMember is the type constraint for Member used by Enum.
 //
-// We can't use Mamber directly in type constraints
+// We can't use Member directly in type constraints
 // because the users create a new subtype from Member
 // instead of using it directly.
 //
@@ -50,7 +50,7 @@ func (e Enum[M, V]) Empty() bool {
 	return len(e.members) == 0
 }
 
-// Len returns how many mambers the enum has.
+// Len returns how many members the enum has.
 func (e Enum[M, V]) Len() int {
 	return len(e.members)
 }
