@@ -40,7 +40,7 @@ func TestMember_String(t *testing.T) {
 func TestMember_GoString(t *testing.T) {
 	is := is.New(t)
 	act := fmt.Sprintf("%#v", Red)
-	is.Equal(act, `enum.M[string]("red")`)
+	is.Equal(act, `enum.Member[string]{"red"}`)
 }
 
 func TestEnum_Parse(t *testing.T) {
