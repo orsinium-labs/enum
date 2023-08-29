@@ -34,7 +34,10 @@ type Enum[M iMember[V], V comparable] struct {
 
 // New constructs a new [Enum] wrapping the given enum members.
 func New[V comparable, M iMember[V]](members ...M) Enum[M, V] {
-	return Enum[M, V]{members, nil, nil}
+	e := Enum[M, V]{members, nil, nil}
+	e.initm2v()
+	e.initv2m()
+	return e
 }
 
 // TypeName is a string representation of the wrapped type.
@@ -54,7 +57,6 @@ func (e Enum[M, V]) Len() int {
 
 // Contains returns true if the enum has the given member.
 func (e Enum[M, V]) Contains(member M) bool {
-	e.initm2v()
 	_, found := e.m2v[member]
 	return found
 }
@@ -62,14 +64,12 @@ func (e Enum[M, V]) Contains(member M) bool {
 // Parse converts a raw value into a member of the enum.
 //
 // If none of the enum members has the given value, nil is returned.
-func (e *Enum[M, V]) Parse(value V) *M {
-	e.initv2m()
+func (e Enum[M, V]) Parse(value V) *M {
 	return e.v2m[value]
 }
 
 // Value returns the wrapped value of the given enum member.
-func (e *Enum[M, V]) Value(member M) V {
-	e.initm2v()
+func (e Enum[M, V]) Value(member M) V {
 	v, found := e.m2v[member]
 	if !found {
 		return getValue(member)
@@ -97,8 +97,7 @@ func (e Enum[M, V]) Members() []M {
 }
 
 // Values returns a slice of values of all members of the enum.
-func (e *Enum[M, V]) Values() []V {
-	e.initm2v()
+func (e Enum[M, V]) Values() []V {
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
 		res = append(res, e.m2v[m])
