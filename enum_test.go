@@ -8,13 +8,13 @@ import (
 	"github.com/orsinium-labs/enum"
 )
 
-type Color string
+type Color = enum.Member[string]
 
 var (
-	Red    = enum.M[Color]("red")
-	Green  = enum.M[Color]("green")
-	Blue   = enum.M[Color]("blue")
-	Colors = enum.New(Red, Green, Blue)
+	Red    = Color{"red"}
+	Green  = Color{"green"}
+	Blue   = Color{"blue"}
+	Colors = enum.New[string](Red, Green, Blue)
 )
 
 func TestInterfaces(t *testing.T) {
@@ -24,11 +24,11 @@ func TestInterfaces(t *testing.T) {
 
 func TestMemberValue(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Red.Value(), Color("red"))
-	is.Equal(Green.Value(), Color("green"))
-	is.Equal(Blue.Value(), Color("blue"))
-	is.Equal(enum.M[string]("blue").Value(), "blue")
-	is.Equal(enum.M[int](14).Value(), 14)
+	is.Equal(Red.Value, "red")
+	is.Equal(Green.Value, "green")
+	is.Equal(Blue.Value, "blue")
+	is.Equal(enum.Member[string]{"blue"}.Value, "blue")
+	is.Equal(enum.Member[int]{14}.Value, 14)
 }
 
 func TestMemberString(t *testing.T) {
@@ -40,7 +40,7 @@ func TestMemberString(t *testing.T) {
 func TestMemberGoString(t *testing.T) {
 	is := is.New(t)
 	act := fmt.Sprintf("%#v", Red)
-	is.Equal(act, `enum.M[Color]("red")`)
+	is.Equal(act, `enum.M[string]("red")`)
 }
 
 func TestEnumParse(t *testing.T) {
@@ -52,13 +52,13 @@ func TestEnumParse(t *testing.T) {
 func TestEnumEmpty(t *testing.T) {
 	is := is.New(t)
 	is.True(!Colors.Empty())
-	is.True(enum.New[int]().Empty())
+	is.True(enum.New[int, enum.Member[int]]().Empty())
 }
 
 func TestEnumLen(t *testing.T) {
 	is := is.New(t)
 	is.Equal(Colors.Len(), 3)
-	is.Equal(enum.New[int]().Len(), 0)
+	is.Equal(enum.New[int, enum.Member[int]]().Len(), 0)
 }
 
 func TestEnumContains(t *testing.T) {
@@ -66,20 +66,20 @@ func TestEnumContains(t *testing.T) {
 	is.True(Colors.Contains(Red))
 	is.True(Colors.Contains(Green))
 	is.True(Colors.Contains(Blue))
-	blue := enum.M[Color]("blue")
+	blue := Color{"blue"}
 	is.True(Colors.Contains(blue))
-	purple := enum.M[Color]("purple")
+	purple := Color{"purple"}
 	is.True(!Colors.Contains(purple))
 }
 
 func TestEnumMembers(t *testing.T) {
 	is := is.New(t)
-	exp := []enum.Member[Color]{Red, Green, Blue}
+	exp := []Color{Red, Green, Blue}
 	is.Equal(Colors.Members(), exp)
 }
 
 func TestEnumValues(t *testing.T) {
 	is := is.New(t)
-	exp := []Color{"red", "green", "blue"}
+	exp := []string{"red", "green", "blue"}
 	is.Equal(Colors.Values(), exp)
 }

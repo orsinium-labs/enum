@@ -6,15 +6,15 @@ import (
 )
 
 type Member[T comparable] struct {
-	value T
+	Value T
 }
 
-func M[T comparable](value T) Member[T] {
-	return Member[T]{value}
+type iMember[T comparable] interface {
+	GetValue() T
 }
 
-func (m Member[T]) Value() T {
-	return m.value
+func (m Member[T]) GetValue() T {
+	return m.Value
 }
 
 func (m Member[T]) TypeName() string {
@@ -32,72 +32,72 @@ func (m Member[T]) TypeName() string {
 }
 
 func (m Member[T]) String() string {
-	return fmt.Sprintf("%v", m.value)
+	return fmt.Sprintf("%v", m.Value)
 }
 
 func (m Member[T]) GoString() string {
-	return fmt.Sprintf("enum.M[%s](%#v)", m.TypeName(), m.value)
+	return fmt.Sprintf("enum.M[%s](%#v)", m.TypeName(), m.Value)
 }
 
-type Enum[T comparable] struct {
-	members []Member[T]
+type Enum[M iMember[T], T comparable] struct {
+	members []M
 }
 
-func New[T comparable](members ...Member[T]) Enum[T] {
-	return Enum[T]{members}
+func New[T comparable, M iMember[T]](members ...M) Enum[M, T] {
+	return Enum[M, T]{members}
 }
 
-func (m Enum[T]) TypeName() string {
+func (m Enum[M, T]) TypeName() string {
 	return Member[T]{}.TypeName()
 }
 
-func (e Enum[T]) Empty() bool {
+func (e Enum[M, T]) Empty() bool {
 	return len(e.members) == 0
 }
 
-func (e Enum[T]) Len() int {
+func (e Enum[M, T]) Len() int {
 	return len(e.members)
 }
 
-func (e Enum[T]) Contains(member Member[T]) bool {
+func (e Enum[M, T]) Contains(member M) bool {
 	for _, m := range e.members {
-		if m == member {
+		if m.GetValue() == member.GetValue() {
 			return true
 		}
 	}
 	return false
 }
 
-func (e Enum[T]) Parse(value T) *Member[T] {
+func (e Enum[M, T]) Parse(value T) *M {
 	for _, member := range e.members {
-		if member.value == value {
+		if member.GetValue() == value {
 			return &member
 		}
 	}
 	return nil
 }
 
-func (e Enum[T]) Value(member Member[T]) T {
-	return member.value
+func (e Enum[M, T]) Value(member M) T {
+	return member.GetValue()
 }
 
-func (e Enum[T]) Index(member Member[T]) int {
+func (e Enum[M, T]) Index(member M) int {
 	for i, m := range e.members {
-		if m == member {
+		if m.GetValue() == member.GetValue() {
 			return i
 		}
 	}
 	panic("the given Member does not belong to this Enum")
 }
 
-func (e Enum[T]) Members() []Member[T] {
+func (e Enum[M, T]) Members() []M {
 	return e.members
 }
 
-func (e Enum[T]) Values() []T {
+func (e Enum[M, T]) Values() []T {
 	res := make([]T, 0, len(e.members))
 	for _, m := range e.members {
-		res = append(res, m.value)
+		res = append(res, m.GetValue())
 	}
 	return res
 }
