@@ -22,7 +22,7 @@ func TestInterfaces(t *testing.T) {
 	var _ fmt.GoStringer = enum.Member[any]{}
 }
 
-func TestMemberValue(t *testing.T) {
+func TestMember_Value(t *testing.T) {
 	is := is.New(t)
 	is.Equal(Red.Value, "red")
 	is.Equal(Green.Value, "green")
@@ -31,37 +31,39 @@ func TestMemberValue(t *testing.T) {
 	is.Equal(enum.Member[int]{14}.Value, 14)
 }
 
-func TestMemberString(t *testing.T) {
+func TestMember_String(t *testing.T) {
 	is := is.New(t)
 	act := fmt.Sprint(Red)
 	is.Equal(act, "red")
 }
 
-func TestMemberGoString(t *testing.T) {
+func TestMember_GoString(t *testing.T) {
 	is := is.New(t)
 	act := fmt.Sprintf("%#v", Red)
 	is.Equal(act, `enum.M[string]("red")`)
 }
 
-func TestEnumParse(t *testing.T) {
+func TestEnum_Parse(t *testing.T) {
 	is := is.New(t)
 	parsed := Colors.Parse("red")
 	is.Equal(parsed, &Red)
+	parsed = Colors.Parse("purple")
+	is.Equal(parsed, nil)
 }
 
-func TestEnumEmpty(t *testing.T) {
+func TestEnum_Empty(t *testing.T) {
 	is := is.New(t)
 	is.True(!Colors.Empty())
 	is.True(enum.New[int, enum.Member[int]]().Empty())
 }
 
-func TestEnumLen(t *testing.T) {
+func TestEnum_Len(t *testing.T) {
 	is := is.New(t)
 	is.Equal(Colors.Len(), 3)
 	is.Equal(enum.New[int, enum.Member[int]]().Len(), 0)
 }
 
-func TestEnumContains(t *testing.T) {
+func TestEnum_Contains(t *testing.T) {
 	is := is.New(t)
 	is.True(Colors.Contains(Red))
 	is.True(Colors.Contains(Green))
@@ -72,14 +74,26 @@ func TestEnumContains(t *testing.T) {
 	is.True(!Colors.Contains(purple))
 }
 
-func TestEnumMembers(t *testing.T) {
+func TestEnum_Members(t *testing.T) {
 	is := is.New(t)
 	exp := []Color{Red, Green, Blue}
 	is.Equal(Colors.Members(), exp)
 }
 
-func TestEnumValues(t *testing.T) {
+func TestEnum_Values(t *testing.T) {
 	is := is.New(t)
 	exp := []string{"red", "green", "blue"}
 	is.Equal(Colors.Values(), exp)
+}
+
+func TestEnum_Value(t *testing.T) {
+	is := is.New(t)
+	is.Equal(Colors.Value(Red), "red")
+}
+
+func TestEnum_Index(t *testing.T) {
+	is := is.New(t)
+	is.Equal(Colors.Index(Red), 0)
+	is.Equal(Colors.Index(Green), 1)
+	is.Equal(Colors.Index(Blue), 2)
 }
