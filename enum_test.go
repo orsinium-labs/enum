@@ -1,14 +1,13 @@
 package enum_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/enum"
 )
 
-type Color = enum.Member[string]
+type Color enum.Member[string]
 
 var (
 	Red    = Color{"red"}
@@ -17,11 +16,6 @@ var (
 	Colors = enum.New[string](Red, Green, Blue)
 )
 
-func TestInterfaces(t *testing.T) {
-	var _ fmt.Stringer = enum.Member[any]{}
-	var _ fmt.GoStringer = enum.Member[any]{}
-}
-
 func TestMember_Value(t *testing.T) {
 	is := is.New(t)
 	is.Equal(Red.Value, "red")
@@ -29,18 +23,6 @@ func TestMember_Value(t *testing.T) {
 	is.Equal(Blue.Value, "blue")
 	is.Equal(enum.Member[string]{"blue"}.Value, "blue")
 	is.Equal(enum.Member[int]{14}.Value, 14)
-}
-
-func TestMember_String(t *testing.T) {
-	is := is.New(t)
-	act := fmt.Sprint(Red)
-	is.Equal(act, "red")
-}
-
-func TestMember_GoString(t *testing.T) {
-	is := is.New(t)
-	act := fmt.Sprintf("%#v", Red)
-	is.Equal(act, `enum.Member[string]{"red"}`)
 }
 
 func TestEnum_Parse(t *testing.T) {
@@ -96,12 +78,4 @@ func TestEnum_Index(t *testing.T) {
 	is.Equal(Colors.Index(Red), 0)
 	is.Equal(Colors.Index(Green), 1)
 	is.Equal(Colors.Index(Blue), 2)
-}
-
-func TestMixMemberTypes(t *testing.T) {
-	type Color = enum.Member[string]
-	type Country = enum.Member[string]
-	red := Color{"red"}
-	netherlands := Country{"Netherlands"}
-	_ = enum.New[string](red, netherlands)
 }

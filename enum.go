@@ -2,55 +2,17 @@ package enum
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 )
 
 // Member is an enum member, a specific value bound to a variable.
 type Member[T comparable] struct {
-	// Value is the underlying of the enum member.
-	//
-	// You must never change it. It is public only so that
-	// it's easier for you to construct new members
-	// from the given type alias.
 	Value T
 }
 
 type iMember[T comparable] interface {
-	GetValue() T
-	String() string
-	GoString() string
-}
-
-// GetValue is for internal use only.
-//
-// If you need to access an enum member value, use Member.Value
-// or [Enum.Value] instead.
-func (m Member[T]) GetValue() T {
-	return m.Value
-}
-
-// TypeName is a string representation of the wrapped type.
-func (Member[T]) TypeName() string {
-	return fmt.Sprintf("%T", *new(T))
-}
-
-// String implements [fmt.Stringer] interface.
-//
-// It returns the string representation of the wrapped value.
-// So, these two lines of code are equivalent:
-//
-//	fmt.Println(Red)
-//	fmt.Println(Red.Value)
-func (m Member[T]) String() string {
-	return fmt.Sprintf("%v", m.Value)
-}
-
-// GoString implements [fmt.GoStringer] interface.
-//
-// When you print a member using "%#v" format,
-// it will show the member representation as a valid Go syntax.
-func (m Member[T]) GoString() string {
-	return fmt.Sprintf("%T{%#v}", m, m.Value)
+	~struct{ Value T }
 }
 
 // Enum is a collection of enum members.
@@ -83,7 +45,7 @@ func (e Enum[M, V]) Len() int {
 // Contains returns true if the enum has the given member.
 func (e Enum[M, V]) Contains(member M) bool {
 	for _, m := range e.members {
-		if m.GetValue() == member.GetValue() {
+		if e.Value(m) == e.Value(member) {
 			return true
 		}
 	}
@@ -95,7 +57,7 @@ func (e Enum[M, V]) Contains(member M) bool {
 // If none of the enum members has the given value, nil is returned.
 func (e Enum[M, V]) Parse(value V) *M {
 	for _, member := range e.members {
-		if member.GetValue() == value {
+		if e.Value(member) == value {
 			return &member
 		}
 	}
@@ -104,7 +66,10 @@ func (e Enum[M, V]) Parse(value V) *M {
 
 // Value returns Member.Value of the given enum member.
 func (Enum[M, V]) Value(member M) V {
-	return member.GetValue()
+	// We could do that without reflection if we use type alias for enum members
+	// instead of creating a new type. But then we lose type safety
+	// when the user passes an enum member into a function.
+	return reflect.ValueOf(member).Field(0).Interface().(V)
 }
 
 // Index returns the index of the given member in the enum.
@@ -112,7 +77,7 @@ func (Enum[M, V]) Value(member M) V {
 // If the given memeber is not in the enum, it panics.
 func (e Enum[M, V]) Index(member M) int {
 	for i, m := range e.members {
-		if m.GetValue() == member.GetValue() {
+		if e.Value(m) == e.Value(member) {
 			return i
 		}
 	}
@@ -128,7 +93,7 @@ func (e Enum[M, V]) Members() []M {
 func (e Enum[M, V]) Values() []V {
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
-		res = append(res, m.GetValue())
+		res = append(res, e.Value(m))
 	}
 	return res
 }
@@ -139,7 +104,7 @@ func (e Enum[M, V]) Values() []V {
 func (e Enum[M, V]) String() string {
 	values := make([]string, 0, len(e.members))
 	for _, m := range e.members {
-		values = append(values, m.String())
+		values = append(values, fmt.Sprintf("%v", e.Value(m)))
 	}
 	return strings.Join(values, ", ")
 }
@@ -151,7 +116,7 @@ func (e Enum[M, V]) String() string {
 func (e Enum[M, V]) GoString() string {
 	values := make([]string, 0, len(e.members))
 	for _, m := range e.members {
-		values = append(values, m.GoString())
+		values = append(values, fmt.Sprintf("%T{%#v}", m, e.Value(m)))
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New[%T](%s)", *new(V), joined)

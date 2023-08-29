@@ -7,7 +7,7 @@ import (
 )
 
 func ExampleNew() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -17,11 +17,11 @@ func ExampleNew() {
 	)
 
 	fmt.Printf("%#v\n", Colors)
-	// Output: enum.New[string](enum.Member[string]{"red"}, enum.Member[string]{"green"}, enum.Member[string]{"blue"})
+	// Output: enum.New[string](enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
 }
 
 func ExampleEnum_String() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -35,7 +35,7 @@ func ExampleEnum_String() {
 }
 
 func ExampleEnum_GoString() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -45,11 +45,11 @@ func ExampleEnum_GoString() {
 	)
 
 	fmt.Printf("%#v\n", Colors)
-	// Output: enum.New[string](enum.Member[string]{"red"}, enum.Member[string]{"green"}, enum.Member[string]{"blue"})
+	// Output: enum.New[string](enum_test.Color{"red"}, enum_test.Color{"green"}, enum_test.Color{"blue"})
 }
 
 func ExampleEnum_Parse() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -60,11 +60,11 @@ func ExampleEnum_Parse() {
 
 	parsed := Colors.Parse("red")
 	fmt.Printf("%#v\n", parsed)
-	// Output: enum.Member[string]{"red"}
+	// Output: &enum_test.Color{Value:"red"}
 }
 
 func ExampleEnum_Contains() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -79,7 +79,7 @@ func ExampleEnum_Contains() {
 }
 
 func ExampleEnum_Empty() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -94,7 +94,7 @@ func ExampleEnum_Empty() {
 }
 
 func ExampleEnum_Index() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -109,7 +109,7 @@ func ExampleEnum_Index() {
 }
 
 func ExampleEnum_Value() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -124,7 +124,7 @@ func ExampleEnum_Value() {
 }
 
 func ExampleEnum_Len() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -139,7 +139,7 @@ func ExampleEnum_Len() {
 }
 
 func ExampleEnum_Members() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -150,11 +150,11 @@ func ExampleEnum_Members() {
 
 	members := Colors.Members()
 	fmt.Println(members)
-	// Output: [red green blue]
+	// Output: [{red} {green} {blue}]
 }
 
 func ExampleEnum_Values() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -169,7 +169,7 @@ func ExampleEnum_Values() {
 }
 
 func ExampleEnum_TypeName() {
-	type Color = enum.Member[string]
+	type Color enum.Member[string]
 
 	var (
 		Red    = Color{"red"}
@@ -180,26 +180,5 @@ func ExampleEnum_TypeName() {
 
 	tname := Colors.TypeName()
 	fmt.Println(tname)
-	// Output: string
-}
-
-func ExampleMember_GoString() {
-	type Color = enum.Member[string]
-	var Red = Color{"red"}
-	fmt.Printf("%#v\n", Red)
-	// Output: enum.Member[string]{"red"}
-}
-
-func ExampleMember_String() {
-	type Color = enum.Member[string]
-	var Red = Color{"red"}
-	fmt.Println(Red)
-	// Output: red
-}
-
-func ExampleMember_TypeName() {
-	type Color = enum.Member[string]
-	var Red = Color{"red"}
-	fmt.Println(Red.TypeName())
 	// Output: string
 }

@@ -1,12 +1,11 @@
 # enum
 
-Type safe enums for Go without code generation or reflection.
+Type safe enums for Go without code generation.
 
 Features:
 
 * Type-safe, thanks to generics.
 * No code generation.
-* No reflection.
 * Well-documented, with working examples for every function.
 * Flexible, supports both static and runtime definitions.
 
@@ -21,7 +20,7 @@ go get github.com/orsinium-labs/enum
 Define:
 
 ```go
-type Color = enum.Member[string]
+type Color enum.Member[string]
 
 var (
   Red    = Color{"red"}
