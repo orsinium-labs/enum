@@ -97,3 +97,11 @@ func TestEnum_Index(t *testing.T) {
 	is.Equal(Colors.Index(Green), 1)
 	is.Equal(Colors.Index(Blue), 2)
 }
+
+func TestMixMemberTypes(t *testing.T) {
+	type Color = enum.Member[string]
+	type Country = enum.Member[string]
+	red := Color{"red"}
+	netherlands := Country{"Netherlands"}
+	_ = enum.New[string](red, netherlands)
+}
