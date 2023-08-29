@@ -11,6 +11,14 @@ type Member[T comparable] struct {
 	Value T
 }
 
+// iMember is the type constraint for Member used by Enum.
+//
+// We can't use Mamber directly in type constraints
+// because the users create a new subtype from Member
+// instead of using it directly.
+//
+// We also can't use a normal interface because new types
+// don't inherit methods of their base type.
 type iMember[T comparable] interface {
 	~struct{ Value T }
 }
@@ -64,7 +72,7 @@ func (e Enum[M, V]) Parse(value V) *M {
 	return nil
 }
 
-// Value returns Member.Value of the given enum member.
+// Value returns the wrapped value of the given enum member.
 func (Enum[M, V]) Value(member M) V {
 	// We could do that without reflection if we use type alias for enum members
 	// instead of creating a new type. But then we lose type safety
@@ -74,7 +82,9 @@ func (Enum[M, V]) Value(member M) V {
 
 // Index returns the index of the given member in the enum.
 //
-// If the given memeber is not in the enum, it panics.
+// If the given member is not in the enum, it panics.
+// Use [Enum.Contains] first if you don't know for sure
+// if the member belongs to the enum.
 func (e Enum[M, V]) Index(member M) int {
 	for i, m := range e.members {
 		if e.Value(m) == e.Value(member) {
@@ -89,7 +99,7 @@ func (e Enum[M, V]) Members() []M {
 	return e.members
 }
 
-// Values returns a slice of values of all memebers of the enum.
+// Values returns a slice of values of all members of the enum.
 func (e Enum[M, V]) Values() []V {
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
