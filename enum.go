@@ -28,11 +28,13 @@ type iMember[T comparable] interface {
 // Use [New] to construct a new Enum from a list of members.
 type Enum[M iMember[V], V comparable] struct {
 	members []M
+	v2m     map[V]*M
+	m2v     map[M]V
 }
 
 // New constructs a new [Enum] wrapping the given enum members.
 func New[V comparable, M iMember[V]](members ...M) Enum[M, V] {
-	return Enum[M, V]{members}
+	return Enum[M, V]{members, nil, nil}
 }
 
 // TypeName is a string representation of the wrapped type.
@@ -52,32 +54,27 @@ func (e Enum[M, V]) Len() int {
 
 // Contains returns true if the enum has the given member.
 func (e Enum[M, V]) Contains(member M) bool {
-	for _, m := range e.members {
-		if e.Value(m) == e.Value(member) {
-			return true
-		}
-	}
-	return false
+	e.initm2v()
+	_, found := e.m2v[member]
+	return found
 }
 
 // Parse converts a raw value into a member of the enum.
 //
 // If none of the enum members has the given value, nil is returned.
-func (e Enum[M, V]) Parse(value V) *M {
-	for _, member := range e.members {
-		if e.Value(member) == value {
-			return &member
-		}
-	}
-	return nil
+func (e *Enum[M, V]) Parse(value V) *M {
+	e.initv2m()
+	return e.v2m[value]
 }
 
 // Value returns the wrapped value of the given enum member.
-func (Enum[M, V]) Value(member M) V {
-	// We could do that without reflection if we use type alias for enum members
-	// instead of creating a new type. But then we lose type safety
-	// when the user passes an enum member into a function.
-	return reflect.ValueOf(member).Field(0).Interface().(V)
+func (e *Enum[M, V]) Value(member M) V {
+	e.initm2v()
+	v, found := e.m2v[member]
+	if !found {
+		return getValue(member)
+	}
+	return v
 }
 
 // Index returns the index of the given member in the enum.
@@ -100,10 +97,11 @@ func (e Enum[M, V]) Members() []M {
 }
 
 // Values returns a slice of values of all members of the enum.
-func (e Enum[M, V]) Values() []V {
+func (e *Enum[M, V]) Values() []V {
+	e.initm2v()
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
-		res = append(res, e.Value(m))
+		res = append(res, e.m2v[m])
 	}
 	return res
 }
@@ -130,4 +128,36 @@ func (e Enum[M, V]) GoString() string {
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
+}
+
+// initm2v creates a mapping of members to their values (m2v).
+//
+// The goal is to reduce reflect calls.
+func (e *Enum[M, V]) initm2v() {
+	if e.m2v == nil {
+		e.m2v = make(map[M]V)
+		for _, m := range e.members {
+			e.m2v[m] = getValue(m)
+		}
+	}
+}
+
+// initv2m creates a mapping of values to members wrapping them (v2m).
+//
+// The goal is to reduce reflect calls.
+func (e *Enum[M, V]) initv2m() {
+	if e.v2m == nil {
+		e.v2m = make(map[V]*M)
+		for i, m := range e.members {
+			v := getValue(m)
+			e.v2m[v] = &e.members[i]
+		}
+	}
+}
+
+func getValue[M iMember[V], V comparable](m M) V {
+	// We could do that without reflection if we use type alias for enum members
+	// instead of creating a new type. But then we lose type safety
+	// when the user passes an enum member into a function.
+	return reflect.ValueOf(m).Field(0).Interface().(V)
 }
