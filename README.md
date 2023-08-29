@@ -10,6 +10,7 @@ Type safe enums for Go without code generation.
 * No code generation.
 * Well-documented, with working examples for every function.
 * Flexible, supports both static and runtime definitions.
+* Zero-dependency.
 
 ## 📦 Installation
 
