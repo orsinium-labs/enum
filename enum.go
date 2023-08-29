@@ -2,6 +2,7 @@ package enum
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Member is an enum member, a specific value bound to a variable.
@@ -16,6 +17,8 @@ type Member[T comparable] struct {
 
 type iMember[T comparable] interface {
 	GetValue() T
+	String() string
+	GoString() string
 }
 
 // GetValue is for internal use only.
@@ -44,7 +47,7 @@ func (m Member[T]) String() string {
 
 // GoString implements [fmt.GoStringer] interface.
 //
-// When you print a member using "%#v" format, i
+// When you print a member using "%#v" format,
 // it will show the member representation as a valid Go syntax.
 func (m Member[T]) GoString() string {
 	return fmt.Sprintf("%T{%#v}", m, m.Value)
@@ -128,4 +131,28 @@ func (e Enum[M, V]) Values() []V {
 		res = append(res, m.GetValue())
 	}
 	return res
+}
+
+// String implements [fmt.Stringer] interface.
+//
+// It returns a comma-separated list of values of the enum members.
+func (e Enum[M, V]) String() string {
+	values := make([]string, 0, len(e.members))
+	for _, m := range e.members {
+		values = append(values, m.String())
+	}
+	return strings.Join(values, ", ")
+}
+
+// GoString implements [fmt.GoStringer] interface.
+//
+// When you print a member using "%#v" format,
+// it will show the enum representation as a valid Go syntax.
+func (e Enum[M, V]) GoString() string {
+	values := make([]string, 0, len(e.members))
+	for _, m := range e.members {
+		values = append(values, m.GoString())
+	}
+	joined := strings.Join(values, ", ")
+	return fmt.Sprintf("enum.New[%T](%s)", *new(V), joined)
 }
