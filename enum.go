@@ -2,6 +2,7 @@ package enum
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 )
 
@@ -95,6 +96,12 @@ func (e Enum[M, V]) Index(member M) int {
 // Members returns a slice of the members in the enum.
 func (e Enum[M, V]) Members() []M {
 	return e.members
+}
+
+// Random returns a randomly selected member from the enum.
+func (e Enum[M, V]) Random() M {
+	selectedIndex := rand.Intn(len(e.members))
+	return e.members[selectedIndex]
 }
 
 // Values returns a slice of values of all members of the enum.

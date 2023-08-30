@@ -63,6 +63,11 @@ func TestEnum_Members(t *testing.T) {
 	is.Equal(Colors.Members(), exp)
 }
 
+func TestEnum_Random(t *testing.T) {
+	is := is.New(t)
+	is.True(Colors.Contains(Colors.Random()))
+}
+
 func TestEnum_Values(t *testing.T) {
 	is := is.New(t)
 	exp := []string{"red", "green", "blue"}
