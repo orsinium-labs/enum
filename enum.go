@@ -28,14 +28,16 @@ type iMember[T comparable] interface {
 type Enum[M iMember[V], V comparable] struct {
 	members []M
 	v2m     map[V]*M
-	m2v     map[M]V
 }
 
 // New constructs a new [Enum] wrapping the given enum members.
 func New[V comparable, M iMember[V]](members ...M) Enum[M, V] {
-	e := Enum[M, V]{members, nil, nil}
-	e.initm2v()
-	e.initv2m()
+	e := Enum[M, V]{members, nil}
+	e.v2m = make(map[V]*M)
+	for i, m := range e.members {
+		v := e.Value(m)
+		e.v2m[v] = &e.members[i]
+	}
 	return e
 }
 
@@ -56,8 +58,12 @@ func (e Enum[M, V]) Len() int {
 
 // Contains returns true if the enum has the given member.
 func (e Enum[M, V]) Contains(member M) bool {
-	_, found := e.m2v[member]
-	return found
+	for _, m := range e.members {
+		if m == member {
+			return true
+		}
+	}
+	return false
 }
 
 // Parse converts a raw value into a member of the enum.
@@ -69,11 +75,7 @@ func (e Enum[M, V]) Parse(value V) *M {
 
 // Value returns the wrapped value of the given enum member.
 func (e Enum[M, V]) Value(member M) V {
-	v, found := e.m2v[member]
-	if !found {
-		return getValue(member)
-	}
-	return v
+	return Member[V](member).Value
 }
 
 // Index returns the index of the given member in the enum.
@@ -99,7 +101,7 @@ func (e Enum[M, V]) Members() []M {
 func (e Enum[M, V]) Values() []V {
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
-		res = append(res, e.m2v[m])
+		res = append(res, e.Value(m))
 	}
 	return res
 }
@@ -126,33 +128,4 @@ func (e Enum[M, V]) GoString() string {
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
-}
-
-// initm2v creates a mapping of members to their values (m2v).
-//
-// The goal is to reduce reflect calls.
-func (e *Enum[M, V]) initm2v() {
-	if e.m2v == nil {
-		e.m2v = make(map[M]V)
-		for _, m := range e.members {
-			e.m2v[m] = getValue(m)
-		}
-	}
-}
-
-// initv2m creates a mapping of values to members wrapping them (v2m).
-//
-// The goal is to reduce reflect calls.
-func (e *Enum[M, V]) initv2m() {
-	if e.v2m == nil {
-		e.v2m = make(map[V]*M)
-		for i, m := range e.members {
-			v := getValue(m)
-			e.v2m[v] = &e.members[i]
-		}
-	}
-}
-
-func getValue[M iMember[V], V comparable](m M) V {
-	return Member[V](m).Value
 }
