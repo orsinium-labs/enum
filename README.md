@@ -61,6 +61,17 @@ for _, color := range Colors.Members() {
 }
 ```
 
+Ensure that the enum member belongs to an enum (can be useful for defensive programming to ensure that the caller doesn't construct an enum member manually):
+
+```go
+func f(color Color) {
+  if !colors.Contains(color) {
+    panic("invalid color")
+  }
+  // ...
+}
+```
+
 Define custom methods on enum members:
 
 ```go
