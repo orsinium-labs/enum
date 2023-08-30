@@ -57,7 +57,7 @@ Loop over all enum members:
 
 ```go
 for _, color := range Colors.Members() {
-    // ...
+  // ...
 }
 ```
 
@@ -65,7 +65,7 @@ Define custom methods on enum members:
 
 ```go
 func (c Color) UnmarshalJSON(b []byte) error {
-   return nil
+  return nil
 }
 ```
 
@@ -85,6 +85,10 @@ SetPixel2(0, 0, purple)
 Enum members can be any comparable type, not just strings:
 
 ```go
+type ColorValue struct {
+  UI string
+  DB int
+}
 type Color enum.Member[ColorValue]
 var (
   Red    = Color{ColorValue{"red", 1}}
