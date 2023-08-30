@@ -37,6 +37,8 @@ jobs:
           go-version: 1.18
       - uses: actions/checkout@v3
       - uses: golangci/golangci-lint-action@v3
+        with:
+          args: --config=.golangci.yaml
 
   markdownlint-cli:
     runs-on: ubuntu-latest
