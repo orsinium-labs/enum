@@ -82,6 +82,20 @@ purple := enum.New(Red, Blue)
 SetPixel2(0, 0, purple)
 ```
 
+Enum members can be any comparable type, not just strings:
+
+```go
+type Color enum.Member[ColorValue]
+var (
+  Red    = Color{ColorValue{"red", 1}}
+  Green  = Color{ColorValue{"green", 2}}
+  Blue   = Color{ColorValue{"blue", 3}}
+  Colors = enum.New(Red, Green, Blue)
+)
+
+fmt.Println(Red.Value.UI)
+```
+
 ## 🤔 QnA
 
 1. **What happens when enums are added in Go itself?** I'll keep it alive until someone uses it but I expect the project popularity to quickly die out when there is native language support for enums. When you can mess with the compiler itself, you can do more. For example, this package can't provide an exhaustiveness check for switch statements using enums (maybe only by implementing a linter) but proper language-level enums would most likely have it.
