@@ -2,7 +2,6 @@ package enum
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 )
 
@@ -155,8 +154,5 @@ func (e *Enum[M, V]) initv2m() {
 }
 
 func getValue[M iMember[V], V comparable](m M) V {
-	// We could do that without reflection if we use type alias for enum members
-	// instead of creating a new type. But then we lose type safety
-	// when the user passes an enum member into a function.
-	return reflect.ValueOf(m).Field(0).Interface().(V)
+	return Member[V](m).Value
 }

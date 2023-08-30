@@ -55,7 +55,7 @@ for _, color := range Colors.Members() {
 
 ## 🤔 QnA
 
-1. **Does it use reflection?** A bit. Since `Color` isn't a real `enum.Member` but a different type that happened to have the same struct fields, we need to use reflection to extract wrapped values from enum members.
+1. **Does it use reflection?** No.
 1. **What happens when enums are added in Go itself?** I'll keep it alive until someone uses it but I expect the project popularity to quickly die out when there is a native language support for enums. When you can mess with the compiler itself, you can do more. For example, this package can't provide exhaustiveness check for switch statements using enums (maybe only by implementing a linter) but proper language-level enums would most likely have it.
 1. **Is it reliable?** Yes, pretty much. It has good tests but most importantly it's a small project with just a bit of the actual code that is hard to mess up.
 1. **Is it maintained?** The project is pretty-much feature-complete, so there is nothing for me to commit and release daily. However, I accept contributions (see below).
