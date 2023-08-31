@@ -80,3 +80,12 @@ func TestEnum_Index(t *testing.T) {
 	is.Equal(Colors.Index(Green), 1)
 	is.Equal(Colors.Index(Blue), 2)
 }
+
+func TestEnum_Index_Panic(t *testing.T) {
+	is := is.New(t)
+	defer func() {
+		r := recover()
+		is.Equal(r, "the given Member does not belong to this Enum")
+	}()
+	Colors.Index(Color{"purple"})
+}
