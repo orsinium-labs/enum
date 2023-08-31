@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"time"
 )
 
 // Member is an enum member, a specific value bound to a variable.
@@ -99,22 +100,19 @@ func (e Enum[M, V]) Members() []M {
 }
 
 // Choice returns a randomly selected member of the enum.
-// It takes an optional seed for the random number generator.
+// A random seed can be given (or be 0 to use time.Now().UnixNano() a the seed).
 // nil is returned only if the Enum contains no members.
-func (e Enum[M, V]) Choice(seeds ...int64) *M {
+func (e Enum[M, V]) Choice(seed int64) *M {
 	lenMembers := len(e.members)
 	// Enum is empty
 	if lenMembers == 0 {
 		return nil
 	}
-	// At least one random seed is given, use it and then return a member
-	if len(seeds) != 0 {
-		sourceOfRandomness := rand.NewSource(seeds[0])
-		selectedIndex := rand.New(sourceOfRandomness).Intn(lenMembers)
-		return &(e.members[selectedIndex])
+	if seed == 0 {
+		seed = time.Now().UnixNano()
 	}
-	// No random seeds are given, return a random member
-	return &(e.members[rand.Intn(lenMembers)])
+	r := rand.New(rand.NewSource(seed))
+	return &(e.members[r.Intn(lenMembers)])
 }
 
 // Values returns a slice of values of all members of the enum.
