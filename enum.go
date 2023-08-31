@@ -112,6 +112,7 @@ func (e Enum[M, V]) Choice(seed int64) *M {
 	if seed == 0 {
 		seed = time.Now().UnixNano()
 	}
+	// nolint: gosec
 	r := rand.New(rand.NewSource(seed))
 	return &(e.members[r.Intn(lenMembers)])
 }
