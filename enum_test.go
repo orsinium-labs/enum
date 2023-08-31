@@ -83,8 +83,7 @@ func TestEnum_Choice(t *testing.T) {
 	is.Equal(*m, Blue)
 	// Check that selecting a random member from an empty Enum returns an error
 	emptyEnums := enum.New[string, Color]()
-	m = emptyEnums.Choice(0)
-	is.True(m == nil)
+	is.True(emptyEnums.Choice(0) == nil)
 }
 
 func TestEnum_Values(t *testing.T) {
