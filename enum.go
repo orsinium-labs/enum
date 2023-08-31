@@ -129,3 +129,35 @@ func (e Enum[M, V]) GoString() string {
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
 }
+
+// Builder is a constructor for an [Enum].
+//
+// Use [Builder.Add] to add new members to the future enum
+// and then call [Builder.Enum] to create a new [Enum] with all added members.
+//
+// Builder is useful for when you have lots of enum members, and new ones
+// are added over time, as the project grows. In such scenario, it's easy to forget
+// to add in the [Enum] a newly created [Member].
+// The builder is designed to prevent that.
+type Builder[M iMember[V], V comparable] struct {
+	members  []M
+	finished bool
+}
+
+// NewBuilder creates a new [Builder], a constructor for an [Enum].
+func NewBuilder[V comparable, M iMember[V]]() Builder[M, V] {
+	return Builder[M, V]{make([]M, 0), false}
+}
+
+// Add registers a new [Member] in the builder.
+func (b *Builder[M, V]) Add(m M) M {
+	b.members = append(b.members, m)
+	return m
+}
+
+// Enum creates a new [Enum] with all members registered using [Builder.Add].
+func (b *Builder[M, V]) Enum() Enum[M, V] {
+	b.finished = true
+	e := New(b.members...)
+	return e
+}
