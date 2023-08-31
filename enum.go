@@ -99,10 +99,10 @@ func (e Enum[M, V]) Members() []M {
 	return e.members
 }
 
-// Random returns a randomly selected member of the enum.
+// Choice returns a randomly selected member of the enum.
 // It takes an optional seed for the random number generator.
 // An error is returned only if the Enum contains no members.
-func (e Enum[M, V]) Random(seeds ...int64) (M, error) {
+func (e Enum[M, V]) Choice(seeds ...int64) (M, error) {
 	lenMembers := len(e.members)
 	// Enum is empty
 	if lenMembers == 0 {
