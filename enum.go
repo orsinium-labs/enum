@@ -1,6 +1,7 @@
 package enum
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -98,10 +99,23 @@ func (e Enum[M, V]) Members() []M {
 	return e.members
 }
 
-// Random returns a randomly selected member from the enum.
-func (e Enum[M, V]) Random() M {
-	selectedIndex := rand.Intn(len(e.members))
-	return e.members[selectedIndex]
+// Random returns a randomly selected member of the enum.
+// It takes an optional seed for the random number generator.
+// An error is returned only if the Enum contains no members.
+func (e Enum[M, V]) Random(seeds ...int64) (M, error) {
+	lenMembers := len(e.members)
+	// Enum is empty
+	if lenMembers == 0 {
+		return M{}, errors.New("an Enum must have members to be able to select a random member")
+	}
+	// No random seeds are given
+	if len(seeds) == 0 {
+		return e.members[rand.Intn(lenMembers)], nil
+	}
+	// At least one random seed is given, use the first one and then select a random member
+	sourceOfRandomness := rand.NewSource(seeds[0])
+	selectedIndex := rand.New(sourceOfRandomness).Intn(lenMembers)
+	return e.members[selectedIndex], nil
 }
 
 // Values returns a slice of values of all members of the enum.

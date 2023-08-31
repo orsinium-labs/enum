@@ -65,7 +65,26 @@ func TestEnum_Members(t *testing.T) {
 
 func TestEnum_Random(t *testing.T) {
 	is := is.New(t)
-	is.True(Colors.Contains(Colors.Random()))
+	// Select a random color
+	m, err := Colors.Random()
+	is.NoErr(err)
+	is.True(Colors.Contains(m))
+	// Select a specific color using a specific random seed
+	m, err = Colors.Random(0)
+	is.NoErr(err)
+	is.Equal(m, Red)
+	// Select a specific color using a specific random seed
+	m, err = Colors.Random(1337)
+	is.NoErr(err)
+	is.Equal(m, Green)
+	// Select a specific color using a specific random seed
+	m, err = Colors.Random(42)
+	is.NoErr(err)
+	is.Equal(m, Blue)
+	// Check that selecting a random member from an empty Enum returns an error
+	emptyEnums := enum.New[int, enum.Member[int]]()
+	_, err = emptyEnums.Random()
+	is.True(err != nil)
 }
 
 func TestEnum_Values(t *testing.T) {
