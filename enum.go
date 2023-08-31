@@ -100,7 +100,8 @@ func (e Enum[M, V]) Members() []M {
 }
 
 // Choice returns a randomly selected member of the enum.
-// A random seed can be given (or be 0 to use time.Now().UnixNano() a the seed).
+//
+// A random seed can be given (or be 0 to use time.Now().UnixNano() as the seed).
 // nil is returned only if the Enum contains no members.
 func (e Enum[M, V]) Choice(seed int64) *M {
 	lenMembers := len(e.members)
