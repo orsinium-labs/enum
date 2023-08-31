@@ -108,14 +108,14 @@ func (e Enum[M, V]) Random(seeds ...int64) (M, error) {
 	if lenMembers == 0 {
 		return M{}, errors.New("an Enum must have members to be able to select a random member")
 	}
-	// No random seeds are given
-	if len(seeds) == 0 {
-		return e.members[rand.Intn(lenMembers)], nil
+	// At least one random seed is given, use it and then return a member
+	if len(seeds) != 0 {
+		sourceOfRandomness := rand.NewSource(seeds[0])
+		selectedIndex := rand.New(sourceOfRandomness).Intn(lenMembers)
+		return e.members[selectedIndex], nil
 	}
-	// At least one random seed is given, use the first one and then select a random member
-	sourceOfRandomness := rand.NewSource(seeds[0])
-	selectedIndex := rand.New(sourceOfRandomness).Intn(lenMembers)
-	return e.members[selectedIndex], nil
+	// No random seeds are given, return a random member
+	return e.members[rand.Intn(lenMembers)], nil
 }
 
 // Values returns a slice of values of all members of the enum.
