@@ -182,3 +182,22 @@ func ExampleEnum_TypeName() {
 	fmt.Println(tname)
 	// Output: string
 }
+
+func ExampleNewBuilder() {
+	type Color enum.Member[string]
+	var (
+		b      = enum.NewBuilder[string, Color]()
+		Red    = b.Add(Color{"red"})
+		Green  = b.Add(Color{"green"})
+		Blue   = b.Add(Color{"blue"})
+		Colors = b.Enum()
+	)
+
+	fmt.Println(
+		Colors.Contains(Red),
+		Colors.Contains(Green),
+		Colors.Contains(Blue),
+	)
+	// Output:
+	// true true true
+}

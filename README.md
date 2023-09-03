@@ -111,6 +111,20 @@ var (
 fmt.Println(Red.Value.UI)
 ```
 
+If the enum has lots of members and new ones may be added over time, it's easy to forget to register all members in the enum. To prevent this, use enum.Builder to define an enum:
+
+```go
+type Color enum.Member[string]
+
+var (
+  b      = enum.NewBuilder[string, Color]()
+  Red    = b.Add(Color{"red"})
+  Green  = b.Add(Color{"green"})
+  Blue   = b.Add(Color{"blue"})
+  Colors = b.Enum()
+)
+```
+
 ## 🤔 QnA
 
 1. **What happens when enums are added in Go itself?** I'll keep it alive until someone uses it but I expect the project popularity to quickly die out when there is native language support for enums. When you can mess with the compiler itself, you can do more. For example, this package can't provide an exhaustiveness check for switch statements using enums (maybe only by implementing a linter) but proper language-level enums would most likely have it.

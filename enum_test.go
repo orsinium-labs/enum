@@ -112,3 +112,16 @@ func TestEnum_Index_Panic(t *testing.T) {
 	}()
 	Colors.Index(Color{"purple"})
 }
+
+func TestBuilder(t *testing.T) {
+	is := is.New(t)
+	type Country enum.Member[string]
+	var (
+		b         = enum.NewBuilder[string, Country]()
+		NL        = b.Add(Country{"Netherlands"})
+		FR        = b.Add(Country{"France"})
+		BE        = b.Add(Country{"Belgium"})
+		Countries = b.Enum()
+	)
+	is.Equal(Countries.Members(), []Country{NL, FR, BE})
+}

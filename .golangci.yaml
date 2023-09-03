@@ -1,5 +1,6 @@
 linters:
   disable:
+    - dupword
     - depguard
   presets:
     - bugs
