@@ -12,9 +12,10 @@ type Member[T comparable] struct {
 	Value T
 }
 
-// Matcher provides the customr matcher for value type.
-type Matcher[V comparable] interface {
-	Match(v V) bool
+// Equaler provides the customr comparator for value type.
+type Equaler[V comparable] interface {
+	Equal(v V) bool
+	comparable
 }
 
 // iMember is the type constraint for Member used by Enum.
@@ -78,28 +79,6 @@ func (e Enum[M, V]) Contains(member M) bool {
 // If none of the enum members has the given value, nil is returned.
 func (e Enum[M, V]) Parse(value V) *M {
 	return e.v2m[value]
-}
-
-// Match converts a raw value into a member like Parse. On the other hand,
-// this returns the matched member if V implements Matcher interface, .
-//
-// This is especially beneficial when the value type is struct, which
-// means that be able to implement a custom matcher.
-func (e Enum[M, V]) Match(value V) *M {
-	// check V implements Matcher interface
-	var v V
-	_, ok := any(v).(Matcher[V])
-	if !ok {
-		return e.Parse(value)
-	}
-
-	for v, m := range e.v2m {
-		mv := any(v).(Matcher[V])
-		if mv.Match(value) {
-			return m
-		}
-	}
-	return nil
 }
 
 // Value returns the wrapped value of the given enum member.
@@ -175,6 +154,20 @@ func (e Enum[M, V]) GoString() string {
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
+}
+
+// Parse converts a raw value into a member like Enum.Parse. But,
+// this returns the equal member by Equal().
+//
+// This is especially beneficial when the value type is struct, which
+// means that be able to implement a custom comparator.
+func Parse[M iMember[V], V Equaler[V]](e Enum[M, V], value V) *M {
+	for v, m := range e.v2m {
+		if v.Equal(value) {
+			return m
+		}
+	}
+	return nil
 }
 
 // Builder is a constructor for an [Enum].

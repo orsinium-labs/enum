@@ -138,11 +138,11 @@ var (
 	Books           = enum.New(EfficientGo, ConcurrencyInGo)
 )
 
-func (b BookValue) Match(v BookValue) bool {
+func (b BookValue) Equal(v BookValue) bool {
 	return b.ISBN == v.ISBN
 }
 
-func TestEnum_Match_Book(t *testing.T) {
+func TestParse(t *testing.T) {
 	is := is.New(t)
 	tests := []struct {
 		isbn string
@@ -155,26 +155,7 @@ func TestEnum_Match_Book(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.isbn, func(t *testing.T) {
 			v := BookValue{ISBN: tt.isbn}
-			got := Books.Match(v)
-			is.Equal(got, tt.want)
-		})
-	}
-}
-
-func TestEnum_Match_Color(t *testing.T) {
-	is := is.New(t)
-	tests := []struct {
-		color string
-		want  *Color
-	}{
-		{"red", &Red},
-		{"green", &Green},
-		{"blue", &Blue},
-		{"purple", nil},
-	}
-	for _, tt := range tests {
-		t.Run(tt.color, func(t *testing.T) {
-			got := Colors.Match(tt.color)
+			got := enum.Parse(Books, v)
 			is.Equal(got, tt.want)
 		})
 	}
