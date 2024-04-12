@@ -130,6 +130,7 @@ type BookValue struct {
 	Title string
 	ISBN  string
 }
+
 type Book enum.Member[BookValue]
 
 var (

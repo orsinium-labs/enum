@@ -12,9 +12,9 @@ type Member[T comparable] struct {
 	Value T
 }
 
-// Equaler provides the customr comparator for value type.
+// Equaler check if the two values of the same type are equal.
 type Equaler[V comparable] interface {
-	Equal(v V) bool
+	Equal(other V) bool
 	comparable
 }
 
@@ -156,11 +156,7 @@ func (e Enum[M, V]) GoString() string {
 	return fmt.Sprintf("enum.New(%s)", joined)
 }
 
-// Parse converts a raw value into a member like Enum.Parse. But,
-// this returns the equal member by Equal().
-//
-// This is especially beneficial when the value type is struct, which
-// means that be able to implement a custom comparator.
+// Parse is like [Enum.Parse] but finds the member for the value using [Equaler] comparator.
 func Parse[M iMember[V], V Equaler[V]](e Enum[M, V], value V) *M {
 	for v, m := range e.v2m {
 		if v.Equal(value) {
