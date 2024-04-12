@@ -125,3 +125,57 @@ func TestBuilder(t *testing.T) {
 	)
 	is.Equal(Countries.Members(), []Country{NL, FR, BE})
 }
+
+type BookValue struct {
+	Title string
+	ISBN  string
+}
+type Book enum.Member[BookValue]
+
+var (
+	EfficientGo     = Book{BookValue{"Efficient Go", "978-1098105716"}}
+	ConcurrencyInGo = Book{BookValue{"Concurrency in Go", "978-1491941195"}}
+	Books           = enum.New(EfficientGo, ConcurrencyInGo)
+)
+
+func (b BookValue) Match(v BookValue) bool {
+	return b.ISBN == v.ISBN
+}
+
+func TestEnum_Match_Book(t *testing.T) {
+	is := is.New(t)
+	tests := []struct {
+		isbn string
+		want *Book
+	}{
+		{"978-1098105716", &EfficientGo},
+		{"978-1491941195", &ConcurrencyInGo},
+		{"invalid-isbn", nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.isbn, func(t *testing.T) {
+			v := BookValue{ISBN: tt.isbn}
+			got := Books.Match(v)
+			is.Equal(got, tt.want)
+		})
+	}
+}
+
+func TestEnum_Match_Color(t *testing.T) {
+	is := is.New(t)
+	tests := []struct {
+		color string
+		want  *Color
+	}{
+		{"red", &Red},
+		{"green", &Green},
+		{"blue", &Blue},
+		{"purple", nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.color, func(t *testing.T) {
+			got := Colors.Match(tt.color)
+			is.Equal(got, tt.want)
+		})
+	}
+}
