@@ -125,3 +125,38 @@ func TestBuilder(t *testing.T) {
 	)
 	is.Equal(Countries.Members(), []Country{NL, FR, BE})
 }
+
+type BookValue struct {
+	Title string
+	ISBN  string
+}
+type Book enum.Member[BookValue]
+
+var (
+	EfficientGo     = Book{BookValue{"Efficient Go", "978-1098105716"}}
+	ConcurrencyInGo = Book{BookValue{"Concurrency in Go", "978-1491941195"}}
+	Books           = enum.New(EfficientGo, ConcurrencyInGo)
+)
+
+func (b BookValue) Equal(v BookValue) bool {
+	return b.ISBN == v.ISBN
+}
+
+func TestParse(t *testing.T) {
+	is := is.New(t)
+	tests := []struct {
+		isbn string
+		want *Book
+	}{
+		{"978-1098105716", &EfficientGo},
+		{"978-1491941195", &ConcurrencyInGo},
+		{"invalid-isbn", nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.isbn, func(t *testing.T) {
+			v := BookValue{ISBN: tt.isbn}
+			got := enum.Parse(Books, v)
+			is.Equal(got, tt.want)
+		})
+	}
+}
