@@ -2,6 +2,7 @@ package enum_test
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/orsinium-labs/enum"
 )
@@ -200,4 +201,28 @@ func ExampleNewBuilder() {
 	)
 	// Output:
 	// true true true
+}
+
+type FoldedString string
+
+// Equal implements [enum.Equaler].
+//
+// Compare strings ignoring the case.
+func (s FoldedString) Equal(other FoldedString) bool {
+	return strings.EqualFold(string(s), string(other))
+}
+
+func ExampleParse() {
+	type Color enum.Member[FoldedString]
+
+	var (
+		Red    = Color{"red"}
+		Green  = Color{"green"}
+		Blue   = Color{"blue"}
+		Colors = enum.New(Red, Green, Blue)
+	)
+
+	parsed := enum.Parse(Colors, "RED")
+	fmt.Printf("%#v\n", parsed)
+	// Output: &enum_test.Color{Value:"red"}
 }
