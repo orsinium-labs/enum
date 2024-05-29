@@ -16,8 +16,14 @@ Type safe enums for Go without code generation or reflection.
 ## 📦 Installation
 
 ```bash
-go get github.com/orsinium-labs/enum
+go get github.com/orsinium-labs/enum/v2
 ```
+
+## ⛓️‍💥️ Breaking changes compared to v1
+
+- The generic value field of `enum.Member` has been renamed to `Val` from `Value`. 
+  This enables the implementation of the `database/sql/driver.Valuer` interface on derived types.
+
 
 ## 🛠️ Usage
 

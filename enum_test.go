@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/enum"
+
+	"github.com/orsinium-labs/enum/v2"
 )
 
 type Color enum.Member[string]
@@ -18,11 +19,11 @@ var (
 
 func TestMember_Value(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Red.Value, "red")
-	is.Equal(Green.Value, "green")
-	is.Equal(Blue.Value, "blue")
-	is.Equal(enum.Member[string]{"blue"}.Value, "blue")
-	is.Equal(enum.Member[int]{14}.Value, 14)
+	is.Equal(Red.Val, "red")
+	is.Equal(Green.Val, "green")
+	is.Equal(Blue.Val, "blue")
+	is.Equal(enum.Member[string]{"blue"}.Val, "blue")
+	is.Equal(enum.Member[int]{14}.Val, 14)
 }
 
 func TestEnum_Parse(t *testing.T) {
