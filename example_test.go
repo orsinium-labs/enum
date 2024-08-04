@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/orsinium-labs/enum"
+	"github.com/hcarriz/enum"
 )
 
 func ExampleNew() {
@@ -61,7 +61,7 @@ func ExampleEnum_Parse() {
 
 	parsed := Colors.Parse("red")
 	fmt.Printf("%#v\n", parsed)
-	// Output: &enum_test.Color{Value:"red"}
+	// Output: &enum_test.Color{Property:"red"}
 }
 
 func ExampleEnum_Contains() {
@@ -119,7 +119,7 @@ func ExampleEnum_Value() {
 		Colors = enum.New(Red, Green, Blue)
 	)
 
-	value := Colors.Value(Green)
+	value := Colors.Property(Green)
 	fmt.Println(value)
 	// Output: green
 }
@@ -164,7 +164,7 @@ func ExampleEnum_Values() {
 		Colors = enum.New(Red, Green, Blue)
 	)
 
-	values := Colors.Values()
+	values := Colors.Properties()
 	fmt.Println(values)
 	// Output: [red green blue]
 }
@@ -224,5 +224,5 @@ func ExampleParse() {
 
 	parsed := enum.Parse(Colors, "RED")
 	fmt.Printf("%#v\n", parsed)
-	// Output: &enum_test.Color{Value:"red"}
+	// Output: &enum_test.Color{Property:"red"}
 }

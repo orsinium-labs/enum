@@ -1,22 +1,22 @@
 # enum
 
-[ [📄 docs](https://pkg.go.dev/github.com/orsinium-labs/enum) ] [ [🐙 github](https://github.com/orsinium-labs/enum) ] [ [❤️ sponsor](https://github.com/sponsors/orsinium) ]
+[ [📄 docs](https://pkg.go.dev/github.com/hcarriz/enum) ] [ [🐙 github](https://github.com/hcarriz/enum) ]
 
 Type safe enums for Go without code generation or reflection.
 
 😎 Features:
 
-* Type-safe, thanks to generics.
-* No code generation.
-* No reflection.
-* Well-documented, with working examples for every function.
-* Flexible, supports both static and runtime definitions.
-* Zero-dependency.
+- Type-safe, thanks to generics.
+- No code generation.
+- No reflection.
+- Well-documented, with working examples for every function.
+- Flexible, supports both static and runtime definitions.
+- Zero-dependency.
 
 ## 📦 Installation
 
 ```bash
-go get github.com/orsinium-labs/enum
+go get github.com/hcarriz/enum
 ```
 
 ## 🛠️ Usage

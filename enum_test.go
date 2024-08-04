@@ -1,13 +1,38 @@
 package enum_test
 
 import (
+	"database/sql"
+	"database/sql/driver"
+	"fmt"
 	"testing"
 
+	"github.com/hcarriz/enum"
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/enum"
 )
 
 type Color enum.Member[string]
+
+// Ensure that Color is able to implement the driver.Valuer and sql.Scanner interface.
+var _ driver.Valuer = (*Color)(nil)
+var _ sql.Scanner = (*Color)(nil)
+
+// Scan implements sql.Scanner.
+func (c *Color) Scan(src any) error {
+	var source string
+	switch v := src.(type) {
+	case string:
+		source = v
+	default:
+		return fmt.Errorf("invalid type: %T", src)
+	}
+	*c = *Colors.Parse(source)
+	return nil
+}
+
+// Value implements driver.Valuer.
+func (c *Color) Value() (driver.Value, error) {
+	return driver.Value(c.Property), nil
+}
 
 var (
 	Red    = Color{"red"}
@@ -18,11 +43,11 @@ var (
 
 func TestMember_Value(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Red.Value, "red")
-	is.Equal(Green.Value, "green")
-	is.Equal(Blue.Value, "blue")
-	is.Equal(enum.Member[string]{"blue"}.Value, "blue")
-	is.Equal(enum.Member[int]{14}.Value, 14)
+	is.Equal(Red.Property, "red")
+	is.Equal(Green.Property, "green")
+	is.Equal(Blue.Property, "blue")
+	is.Equal(enum.Member[string]{"blue"}.Property, "blue")
+	is.Equal(enum.Member[int]{14}.Property, 14)
 }
 
 func TestEnum_Parse(t *testing.T) {
@@ -89,12 +114,12 @@ func TestEnum_Choice(t *testing.T) {
 func TestEnum_Values(t *testing.T) {
 	is := is.New(t)
 	exp := []string{"red", "green", "blue"}
-	is.Equal(Colors.Values(), exp)
+	is.Equal(Colors.Properties(), exp)
 }
 
 func TestEnum_Value(t *testing.T) {
 	is := is.New(t)
-	is.Equal(Colors.Value(Red), "red")
+	is.Equal(Colors.Property(Red), "red")
 }
 
 func TestEnum_Index(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 
 // Member is an enum member, a specific value bound to a variable.
 type Member[T comparable] struct {
-	Value T
+	Property T
 }
 
 // Equaler check if the two values of the same type are equal.
@@ -27,7 +27,7 @@ type Equaler[V comparable] interface {
 // We also can't use a normal interface because new types
 // don't inherit methods of their base type.
 type iMember[T comparable] interface {
-	~struct{ Value T }
+	~struct{ Property T }
 }
 
 // Enum is a collection of enum members.
@@ -43,7 +43,7 @@ func New[V comparable, M iMember[V]](members ...M) Enum[M, V] {
 	e := Enum[M, V]{members, nil}
 	e.v2m = make(map[V]*M)
 	for i, m := range e.members {
-		v := e.Value(m)
+		v := e.Property(m)
 		e.v2m[v] = &e.members[i]
 	}
 	return e
@@ -81,9 +81,9 @@ func (e Enum[M, V]) Parse(value V) *M {
 	return e.v2m[value]
 }
 
-// Value returns the wrapped value of the given enum member.
-func (e Enum[M, V]) Value(member M) V {
-	return Member[V](member).Value
+// Property returns the wrapped value of the given enum member.
+func (e Enum[M, V]) Property(member M) V {
+	return Member[V](member).Property
 }
 
 // Index returns the index of the given member in the enum.
@@ -93,7 +93,7 @@ func (e Enum[M, V]) Value(member M) V {
 // if the member belongs to the enum.
 func (e Enum[M, V]) Index(member M) int {
 	for i, m := range e.members {
-		if e.Value(m) == e.Value(member) {
+		if e.Property(m) == e.Property(member) {
 			return i
 		}
 	}
@@ -123,11 +123,11 @@ func (e Enum[M, V]) Choice(seed int64) *M {
 	return &(e.members[r.Intn(lenMembers)])
 }
 
-// Values returns a slice of values of all members of the enum.
-func (e Enum[M, V]) Values() []V {
+// Properties returns a slice of values of all members of the enum.
+func (e Enum[M, V]) Properties() []V {
 	res := make([]V, 0, len(e.members))
 	for _, m := range e.members {
-		res = append(res, e.Value(m))
+		res = append(res, e.Property(m))
 	}
 	return res
 }
@@ -138,7 +138,7 @@ func (e Enum[M, V]) Values() []V {
 func (e Enum[M, V]) String() string {
 	values := make([]string, 0, len(e.members))
 	for _, m := range e.members {
-		values = append(values, fmt.Sprintf("%v", e.Value(m)))
+		values = append(values, fmt.Sprintf("%v", e.Property(m)))
 	}
 	return strings.Join(values, ", ")
 }
@@ -150,7 +150,7 @@ func (e Enum[M, V]) String() string {
 func (e Enum[M, V]) GoString() string {
 	values := make([]string, 0, len(e.members))
 	for _, m := range e.members {
-		values = append(values, fmt.Sprintf("%T{%#v}", m, e.Value(m)))
+		values = append(values, fmt.Sprintf("%T{%#v}", m, e.Property(m)))
 	}
 	joined := strings.Join(values, ", ")
 	return fmt.Sprintf("enum.New(%s)", joined)
