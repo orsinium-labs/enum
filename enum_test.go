@@ -147,11 +147,11 @@ func TestStrictBuilder(t *testing.T) {
 		}
 	}()
 
-	type Country enum.Member[string]
+	type SomeType enum.Member[int]
 	var (
-		b = enum.NewStrictBuilder[string, Country]()
-		_ = b.AddValue("Netherlands")
-		_ = b.AddValue("Netherlands")
+		b = enum.NewStrictBuilder[int, SomeType]()
+		_ = b.AddValue(1)
+		_ = b.AddValue(1)
 		_ = b.Enum()
 	)
 
