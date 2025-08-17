@@ -126,6 +126,38 @@ func TestBuilder(t *testing.T) {
 	is.Equal(Countries.Members(), []Country{NL, FR, BE})
 }
 
+func TestBuilderValue(t *testing.T) {
+	is := is.New(t)
+	type Country enum.Member[string]
+	var (
+		b         = enum.NewBuilder[string, Country]()
+		NL        = b.AddValue("Netherlands")
+		FR        = b.AddValue("France")
+		BE        = b.AddValue("Belgium")
+		Countries = b.Enum()
+	)
+	is.Equal(Countries.Members(), []Country{NL, FR, BE})
+}
+
+func TestStrictBuilder(t *testing.T) {
+	// Recover from expected panic
+	defer func() {
+		if r := recover(); r != nil {
+			return
+		}
+	}()
+
+	type SomeType enum.Member[int]
+	var (
+		b = enum.NewStrictBuilder[int, SomeType]()
+		_ = b.AddValue(1)
+		_ = b.AddValue(1)
+		_ = b.Enum()
+	)
+
+	t.Fatal("expected panic with strict builder")
+}
+
 type BookValue struct {
 	Title string
 	ISBN  string
